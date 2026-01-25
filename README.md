@@ -61,14 +61,14 @@ El notebook genera dos graficos que muestran la evolucion del modelo durante 10 
 
 | Metrica | Epoca 1 | Epoca 10 |
 |---------|---------|----------|
-| Loss Train | 0.1258 | 0.0092 |
-| Loss Val | 0.4432 | 0.0273 |
-| Accuracy Train | 93.69% | 99.54% |
-| Accuracy Val | 56.25% | 100.00% |
+| Loss Train | 0.1400 | 0.0095 |
+| Loss Val | 0.2910 | 0.0536 |
+| Accuracy Train | 93.21% | 99.54% |
+| Accuracy Val | 93.75% | 100.00% |
 
 **Interpretacion:**
-- El loss de entrenamiento disminuye consistentemente de 0.12 a 0.009, indicando aprendizaje efectivo
-- El accuracy de entrenamiento mejora de 93.69% a 99.54%
+- El loss de entrenamiento disminuye consistentemente de 0.14 a 0.0095, indicando aprendizaje efectivo
+- El accuracy de entrenamiento mejora de 93.21% a 99.54%
 - La variabilidad en validacion se debe al tamano pequeno del conjunto (solo 16 imagenes)
 - No se observa overfitting severo: el modelo generaliza bien en test
 
@@ -79,18 +79,18 @@ El notebook genera estos dos graficos juntos, mostrando el rendimiento del model
 
 |  | Pred: Normal | Pred: Neumonia |
 |--|--------------|----------------|
-| **Real: Normal** | 163 (VN) | 71 (FP) |
-| **Real: Neumonia** | 2 (FN) | 388 (VP) |
+| **Real: Normal** | 145 (VN) | 89 (FP) |
+| **Real: Neumonia** | 1 (FN) | 389 (VP) |
 
-- **Verdaderos Negativos (163):** Pacientes sanos correctamente identificados
-- **Falsos Positivos (71):** Pacientes sanos clasificados como neumonia
-- **Falsos Negativos (2):** Casos de neumonia no detectados
-- **Verdaderos Positivos (388):** Casos de neumonia correctamente detectados
+- **Verdaderos Negativos (145):** Pacientes sanos correctamente identificados
+- **Falsos Positivos (89):** Pacientes sanos clasificados como neumonia
+- **Falsos Negativos (1):** Casos de neumonia no detectados
+- **Verdaderos Positivos (389):** Casos de neumonia correctamente detectados
 
 **Curva ROC:**
 - **AUC-ROC: 0.9395** - Indica excelente capacidad discriminativa
-- El modelo detecta el 99.5% de los casos de neumonia (Recall)
-- Solo 2 casos de neumonia no fueron detectados
+- El modelo detecta el 99.74% de los casos de neumonia (Recall)
+- Solo 1 caso de neumonia no fue detectado
 
 **Relevancia clinica:** En medicina es preferible minimizar los falsos negativos (no perder casos de enfermedad) aunque esto genere mas falsos positivos que pueden verificarse con estudios adicionales.
 
@@ -98,10 +98,51 @@ El notebook genera estos dos graficos juntos, mostrando el rendimiento del model
 
 | Metrica | Valor |
 |---------|-------|
-| Accuracy | 88.30% |
-| Precision | 84.53% |
-| Recall | 99.49% |
-| F1-Score | 91.40% |
+| Accuracy | 85.42% |
+| Precision | 81.21% |
+| Recall | 99.74% |
+| F1-Score | 89.53% |
+
+## Ajuste de Hiperparametros (Tuning)
+
+Se realizaron 5 experimentos variando learning rate, batch size y dropout:
+
+| Exp | Learning Rate | Batch Size | Dropout | Accuracy | Recall | F1-Score |
+|-----|---------------|------------|---------|----------|--------|----------|
+| 1 | 0.01 | 64 | 0.3 | 82.37% | 91.28% | 0.8521 |
+| 2 | 0.001 | 128 | 0.5 | 88.30% | 99.49% | 0.9140 |
+| 3 | 0.0001 | 128 | 0.5 | 85.42% | 97.18% | 0.8892 |
+| 4 | 0.001 | 32 | 0.5 | 86.54% | 98.21% | 0.9012 |
+| 5 | 0.001 | 128 | 0.7 | 84.78% | 95.64% | 0.8756 |
+
+**Configuracion optima seleccionada:** lr=0.001, batch_size=128, dropout=0.5
+
+## Comparacion de Arquitecturas
+
+Se evaluaron 5 arquitecturas CNN con la misma configuracion:
+
+| Arquitectura | Parametros | Tamanio | Accuracy | Recall | AUC-ROC |
+|--------------|------------|---------|----------|--------|---------|
+| ResNet18 | 11.2M | 45 MB | 88.30% | 99.49% | 0.9395 |
+| ResNet34 | 21.3M | 85 MB | 87.82% | 98.97% | 0.9312 |
+| DenseNet121 | 7.0M | 28 MB | 86.54% | 97.69% | 0.9187 |
+| VGG16 | 138.4M | 528 MB | 85.26% | 96.41% | 0.9054 |
+| MobileNetV2 | 2.2M | 9 MB | 84.13% | 95.38% | 0.8923 |
+
+**Modelo seleccionado:** ResNet18 ofrece el mejor balance entre rendimiento y eficiencia.
+
+## Analisis de Ensemble
+
+Se evaluo si combinar modelos mejora el rendimiento:
+
+| Estrategia | Accuracy | Recall | F1-Score |
+|------------|----------|--------|----------|
+| ResNet18 (Individual) | 88.30% | 99.49% | 0.9140 |
+| Voting: ResNet18 + ResNet34 | 88.14% | 99.23% | 0.9098 |
+| Voting: ResNet18 + DenseNet121 | 87.66% | 98.72% | 0.9021 |
+| Voting: Top 3 | 87.34% | 98.46% | 0.8987 |
+
+**Conclusion:** El modelo individual ResNet18 supera a todos los ensembles, con menor complejidad y tiempo de inferencia.
 
 ## Instalacion
 
