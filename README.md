@@ -108,7 +108,7 @@ El notebook genera estos dos graficos juntos, mostrando el rendimiento del model
 ```bash
 # Clonar repositorio
 git clone https://github.com/Eledun/proyecto-final-neumonia
-cd pneumonia-detection
+cd proyecto-final-neumonia
 
 # Instalar dependencias
 pip install -r requirements.txt
