@@ -107,7 +107,7 @@ El notebook genera estos dos graficos juntos, mostrando el rendimiento del model
 
 ```bash
 # Clonar repositorio
-git clone https://github.com/Eledun/proyecto-final-neumonia
+git clone https://github.com/Eledun/proyecto-final-neumonia.git
 cd proyecto-final-neumonia
 
 # Instalar dependencias
@@ -117,6 +117,14 @@ pip install -r requirements.txt
 ## Dataset
 
 Descargar de [Kaggle - Chest X-Ray Images](https://www.kaggle.com/paultimothymooney/chest-xray-pneumonia) y colocar en carpeta `chest_xray/`.
+
+## Modelo Pre-entrenado
+
+El modelo entrenado (`pneumonia_model.pth`) pesa **45 MB** y puede ser descargado directamente desde:
+
+[Descargar modelo desde Google Drive](https://drive.google.com/file/d/1OKixGGrA6RVRTX-EUnTOKwar4bRytqBA/view?usp=drive_link)
+
+Una vez descargado, colocar el archivo en la raiz del proyecto.
 
 ## Uso
 
